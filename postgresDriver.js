@@ -8,9 +8,9 @@ const client = new Client({
     host: '127.0.0.1',
     port: 5432,
     database: 'postgres',
-  });
+});
 
-export default async function saveData(data,tableName) {
+async function saveData(data,tableName) {
     try {  
         // ESTABLISH CONNECTION WITH THE POSTGRES DB
         await client.connect();
@@ -47,3 +47,17 @@ export default async function saveData(data,tableName) {
         await client.end();
     }
 };
+
+async function retrieveData(tableName) {
+    try {
+        await client.connect();
+        let results = await client.query(`SELECT * FROM ${tableName}`);
+        return results.rows;
+    }catch(e) {
+        console.log(e);
+    }finally {
+        await client.end();
+    }
+}
+
+export {saveData,retrieveData};
