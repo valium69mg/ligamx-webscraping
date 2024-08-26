@@ -49,9 +49,7 @@ async function saveData(data,tableName) {
     }
 };
 
-// web scrapping config \
-
-const cruzAzulUrl = "https://fbref.com/es/equipos/632f1838/Estadisticas-de-Cruz-Azul";
+// web scrapping config 
 let nameSubfix = '/th';
 let posSubfix = '/td[2]';
 let countrySubfix = '/td[1]/a/span/span';
@@ -66,17 +64,16 @@ let numberOfProgressiveCarryingSubfix = '/td[20]';
 let numberOfProgressivePassesSubfix = '/td[21]';
 let numberOfProgressivePassesReceivedSubfix = '/td[22]';
 
-async function searchData(url) {
+async function searchData(url,noOfPlayers,xpathPrefix) {
   let driver;
   try {
     // build driver
     driver = await new Builder().forBrowser(Browser.CHROME).build();
     // setup driver connection
     await driver.get(url);
-    let xpathPrefix = '//*[@id="stats_standard_31"]/tbody/';
     let data = [];
     // loop through table to retrieve data into a list of dictionaries
-    for (let i = 1; i <= 26; i++) {
+    for (let i = 1; i <= noOfPlayers; i++) {
         let playerStats = {};
         let row = "tr[" + i + "]" ;
         // id 
@@ -145,7 +142,24 @@ async function searchData(url) {
     await driver.quit();
   }
 };
+// cruz azul
+let xpathPrefix = '//*[@id="stats_standard_31"]/tbody/';
+// rows on website (26 players)
+const cruzAzulPlayersCount = 26;
+// 23-24 season stats link
+const cruzAzulUrl2324 = "https://fbref.com/es/equipos/632f1838/2023-2024/Estadisticas-de-Cruz-Azul";
+// 24-25 season stats link
+const cruzAzulUrl = "https://fbref.com/es/equipos/632f1838/Estadisticas-de-Cruz-Azul";
 
-let data = await searchData(cruzAzulUrl);
+// barcelona
+let barcelonaXpathPrefix = '//*[@id="stats_standard_12"]/tbody/';
+// rows on website (23 players)
+const barcelonaPlayersCount = 23;
+// 24-25 season stats link
+const barcelonaUrl = "https://fbref.com/es/equipos/206d90db/Estadisticas-de-Barcelona";
+// 23-24 season stats link
+const barcelonaUrl2324 = "https://fbref.com/es/equipos/206d90db/2023-2024/c12/Estadisticas-de-Barcelona-La-Liga";
 
-await saveData(data,'cruz_azul_stats');
+let data = await searchData(cruzAzulUrl,cruzAzulPlayersCount,xpathPrefix);
+
+await saveData(data, 'cruz_azul_stats_24_25');
