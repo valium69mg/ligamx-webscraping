@@ -2,7 +2,6 @@ import pg from 'pg'
 const { Client } = pg
 import {By, Builder, Browser} from 'selenium-webdriver';
 
-
 // database config
 const client = new Client({
     user: 'postgres',
@@ -12,13 +11,34 @@ const client = new Client({
     database: 'postgres',
   });
 
-async function saveData(data) {
+async function saveData(data,tableName) {
     try {  
+        // ESTABLISH CONNECTION WITH THE POSTGRES DB
         await client.connect();
+        // TABLE CREATION
+        await client.query(`CREATE TABLE IF NOT EXISTS ${tableName} ( \
+            playerid serial, \
+            name varchar(50), \
+            post varchar(10), \
+            country varchar(10), \
+            number_of_matches varchar(10), \
+            number_of_starting_matches varchar(10), \
+            number_of_minutes_played varchar(10), \
+            number_of_goals varchar(10), \
+            number_of_assist varchar(10), \
+            number_of_yellow_cards varchar(10), \
+            number_of_red_cards varchar(10), \
+            number_of_progressive_carrying varchar(10), \
+            number_of_progressive_pass varchar(10), \
+            number_of_progressive_pass_received varchar(10), \
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, \
+            primary key (playerId) \
+          );`)
+        // LOOP THROUGH DATA AND SAVE IT ON THE TABLE
         for (let i = 0; i < data.length; i++) {
             let player = data[i];
-            await client.query("INSERT INTO team_stats (name,post,country,number_of_matches,number_of_starting_matches,number_of_minutes_played,number_of_goals,number_of_assist,number_of_yellow_cards,number_of_red_cards,number_of_progressive_carrying,number_of_progressive_pass,number_of_progressive_pass_received) \
-                    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)",
+            await client.query(`INSERT INTO ${tableName} (name,post,country,number_of_matches,number_of_starting_matches,number_of_minutes_played,number_of_goals,number_of_assist,number_of_yellow_cards,number_of_red_cards,number_of_progressive_carrying,number_of_progressive_pass,number_of_progressive_pass_received) \
+                    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
                 [player['name'],player['pos'],player['country'],player['numberOfMatches'],player['numberOfStartingMatches'],player['numberOfMinutesPlayed'],player['numberOfGoals'],player['numberOfAssist'],player['numberOfYellowCards'],player['numberOfRedCards'],player['numberOfProgressiveCarrying'],player['numberOfProgressivePasses'],player['numberOfProgressivePassesReceived']]);     
         }
         console.log("Team stats saved on the database.");
@@ -29,9 +49,9 @@ async function saveData(data) {
     }
 };
 
-// web scrapping config 
-const cruzAzulUrl = "https://fbref.com/es/equipos/632f1838/Estadisticas-de-Cruz-Azul";
+// web scrapping config \
 
+const cruzAzulUrl = "https://fbref.com/es/equipos/632f1838/Estadisticas-de-Cruz-Azul";
 let nameSubfix = '/th';
 let posSubfix = '/td[2]';
 let countrySubfix = '/td[1]/a/span/span';
@@ -49,10 +69,13 @@ let numberOfProgressivePassesReceivedSubfix = '/td[22]';
 async function searchData(url) {
   let driver;
   try {
+    // build driver
     driver = await new Builder().forBrowser(Browser.CHROME).build();
+    // setup driver connection
     await driver.get(url);
     let xpathPrefix = '//*[@id="stats_standard_31"]/tbody/';
     let data = [];
+    // loop through table to retrieve data into a list of dictionaries
     for (let i = 1; i <= 26; i++) {
         let playerStats = {};
         let row = "tr[" + i + "]" ;
@@ -114,6 +137,7 @@ async function searchData(url) {
         // retrieve data
         data.push(playerStats);
     }
+    // if succesfull return data
     return data;
   } catch (e) {
     console.log(e);
@@ -122,7 +146,6 @@ async function searchData(url) {
   }
 };
 
-
 let data = await searchData(cruzAzulUrl);
 
-await saveData(data);
+await saveData(data,'cruz_azul_stats');
