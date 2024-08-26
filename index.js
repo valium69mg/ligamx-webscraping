@@ -39,22 +39,31 @@ async function analyzeSeason(tableName) {
 
   let results = await retrieveData(tableName);
   // loop through results
+  // goals, assists and g/a
   let maxGoals = 0;
   let maxGoalsName;
   let maxAssists = 0;
   let maxAssistsName;
   let maxGoalsAndAssists = 0;
   let maxGoalsAndAssistsName;
-  let maxProgressions = 0;
-  let maxProgressionsName;
+  // progressions
+  let maxProgressionCarries = 0;
+  let maxProgressionsCarriesName;
+  let maxProgressionPass = 0;
+  let maxProgressionPassName;
+  let maxProgressionReceived = 0;
+  let maxProgressionReceivedName;
+  // time played
   let maxTimePlayed = 0;
   let maxTimePlayedName;
-  let maxCards = 0;
-  let maxCardsName;
+  // cards
+  let maxYellowCards = 0;
+  let maxYellowCardsName;
+  let maxRedCards = 0;
+  let maxRedCardsName;
   for (let i = 0; i < results.length; i++) {
       let player = results[i];
       let goalsAndAssist = 0;
-      let progressions = 0;
       let cards = 0;
       // GOALS
       if (player['number_of_goals'] !== '' && parseInt(player['number_of_goals']) > maxGoals) {
@@ -79,29 +88,26 @@ async function analyzeSeason(tableName) {
         maxTimePlayedName = player['name'];
       }
       // PROGRESSIONS
-      if (player['number_of_progressive_carrying'] !== '') {
-        progressions += parseInt(player['number_of_progressive_carrying']);
+      if (player['number_of_progressive_carrying'] !== '' && parseInt(player['number_of_progressive_carrying']) > maxProgressionCarries) {
+        maxProgressionCarries = parseInt(player['number_of_progressive_carrying']);
+        maxProgressionsCarriesName = player['name'];
       }
-      if (player['number_of_progressive_pass'] !== '') {
-        progressions += parseInt(player['number_of_progressive_pass']);
+      if (player['number_of_progressive_pass'] !== '' && parseInt(player['number_of_progressive_pass']) > maxProgressionPass) {
+        maxProgressionPass = parseInt(player['number_of_progressive_pass']);
+        maxProgressionPassName = player['name'];
       }
-      if (player['number_of_progressive_pass_received'] !== '') {
-        progressions += parseInt(player['number_of_progressive_pass_received']);
-      }
-      if (progressions > maxProgressions) {
-        maxProgressions = progressions;
-        maxProgressionsName = player['name'];
+      if (player['number_of_progressive_pass_received'] !== '' && parseInt(player['number_of_progressive_pass_received']) > maxProgressionReceived) {
+        maxProgressionReceived = parseInt(player['number_of_progressive_pass_received']);
+        maxProgressionReceivedName = player['name'];
       }
       // CARDS
-      if (player['number_of_yellow_cards'] !== '') {
-        cards += parseInt(player['number_of_yellow_cards']);
+      if (player['number_of_yellow_cards'] !== '' && parseInt(player['number_of_yellow_cards']) > maxYellowCards) {
+        maxYellowCards = parseInt(player['number_of_yellow_cards']);
+        maxYellowCardsName = player['name'];
       }
-      if (player['number_of_red_cards'] !== '') {
-        cards += parseInt(player['number_of_red_cards']);
-      }
-      if (cards > maxCards) {
-        maxCards = cards;
-        maxCardsName = player['name'];
+      if (player['number_of_red_cards'] !== '' && parseInt(player['number_of_red_cards']) > maxRedCards) {
+        maxRedCards = parseInt(player['number_of_red_cards']);
+        maxRedCardsName = player['name']; 
       }
   }
   
@@ -109,11 +115,16 @@ async function analyzeSeason(tableName) {
     maxGoals: {amount: maxGoals, name: maxGoalsName},
     maxAssists: {amount: maxAssists,name: maxAssistsName},
     maxGoalsAndAssists: {amount: maxGoalsAndAssists,name: maxGoalsAndAssistsName},
-    maxProgressions: {amount: maxProgressions, name: maxProgressionsName},
+    maxProgressionCarries: {amount: maxProgressionCarries, name: maxProgressionsCarriesName},
+    maxProgressionPass: {amount: maxProgressionPass, name: maxProgressionPassName},
+    maxProgressionReceived: {amount: maxProgressionReceived, name: maxProgressionReceivedName},
     maxTimePlayed: {amount: maxTimePlayed, name: maxTimePlayedName},
-    maxCards: {amount: maxCards, name: maxCardsName},
+    maxYellowCards: {amount: maxYellowCards, name: maxYellowCardsName},
+    maxRedCards: {amount: maxRedCards, name: maxRedCardsName},
   };
   
-  console.log(analyzedData);
+  return analyzedData;
 };
 
+let data = await analyzeSeason('fc_barcelona_stats_24_25');
+console.log(data);
