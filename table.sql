@@ -13,5 +13,6 @@ CREATE TABLE team_stats (
     number_of_progressive_carrying varchar(10),
     number_of_progressive_pass varchar(10),
     number_of_progressive_pass_received varchar(10),
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     primary key (playerId)
 );

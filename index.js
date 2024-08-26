@@ -46,11 +46,11 @@ let numberOfProgressiveCarryingSubfix = '/td[20]';
 let numberOfProgressivePassesSubfix = '/td[21]';
 let numberOfProgressivePassesReceivedSubfix = '/td[22]';
 
-async function searchData() {
+async function searchData(url) {
   let driver;
   try {
     driver = await new Builder().forBrowser(Browser.CHROME).build();
-    await driver.get(cruzAzulUrl);
+    await driver.get(url);
     let xpathPrefix = '//*[@id="stats_standard_31"]/tbody/';
     let data = [];
     for (let i = 1; i <= 26; i++) {
@@ -123,6 +123,6 @@ async function searchData() {
 };
 
 
-let data = await searchData();
+let data = await searchData(cruzAzulUrl);
 
 await saveData(data);
