@@ -2,7 +2,7 @@ import analyzeSeason from './analyzeSeason.js';
 import { printTeamAnalysis, maxLeagueAnalysis,getBestOfTheSeasonStats } from './analyzeSeason.js';
 import searchAndSaveData from './searchAndSaveData.js';
 
-const noOfPlayers = 25;
+const noOfPlayers = 22;
 //=============================== LIGA MX ====================================//
 const ligamxXpath = '//*[@id="stats_standard_31"]/tbody/';
 let ligaMxTeams = [
@@ -218,9 +218,119 @@ async function laLiga() {
   let bestOfLigaMx = getBestOfTheSeasonStats(laLigaAnalyzed,seasonMaxStats);
   console.log(bestOfLigaMx);
 }
+let premierXpath = '//*[@id="stats_standard_9"]/tbody/';
+//=============================== PREMIER LEAGUE ====================================//
 
-
+let premierTeams = [
+  {
+    tableName: 'manchester_united_stats_24_25',
+    teamUrl: 'https://fbref.com/es/equipos/19538871/Estadisticas-de-Manchester-United'
+  },
+  {
+    tableName: 'manchester_city_stats_24_25',
+    teamUrl: 'https://fbref.com/es/equipos/b8fd03ef/Estadisticas-de-Manchester-City'
+  },
+  {
+    tableName: 'brighton_stats_24_25',
+    teamUrl: 'https://fbref.com/es/equipos/d07537b9/Estadisticas-de-Brighton-and-Hove-Albion'
+  },
+  {
+    tableName: 'arsenal_stats_24_25',
+    teamUrl: 'https://fbref.com/es/equipos/18bb7c10/Estadisticas-de-Arsenal'
+  },
+  {
+    tableName: 'liverpool_stats_24_25',
+    teamUrl: 'https://fbref.com/es/equipos/822bd0ba/Estadisticas-de-Liverpool'
+  },
+  {
+    tableName: 'tottenham_stats_24_25',
+    teamUrl: 'https://fbref.com/es/equipos/361ca564/Estadisticas-de-Tottenham-Hotspur'
+  },
+  {
+    tableName: 'newcastle_united_stats_24_25',
+    teamUrl: 'https://fbref.com/es/equipos/b2b47a98/Estadisticas-de-Newcastle-United'
+  },
+  {
+    tableName: 'nottingham_forest_stats_24_25',
+    teamUrl: 'https://fbref.com/es/equipos/e4a775cb/Estadisticas-de-Nottingham-Forest'
+  },
+  {
+    tableName: 'chelsea_stats_24_25',
+    teamUrl: 'https://fbref.com/es/equipos/cff3d9bb/Estadisticas-de-Chelsea'
+  },
+  {
+    tableName: 'west_ham_united_stats_24_25',
+    teamUrl: 'https://fbref.com/es/equipos/7c21e445/Estadisticas-de-West-Ham-United'
+  },
+  {
+    tableName: 'fullham_stats_24_25',
+    teamUrl: 'https://fbref.com/es/equipos/fd962109/Estadisticas-de-Fulham'
+  },
+  {
+    tableName: 'aston_villa_stats_24_25',
+    teamUrl: 'https://fbref.com/es/equipos/8602292d/Estadisticas-de-Aston-Villa'
+  },
+  {
+    tableName: 'brentford_stats_24_25',
+    teamUrl: 'https://fbref.com/es/equipos/cd051869/Estadisticas-de-Brentford'
+  },
+  {
+    tableName: 'bournemouth_stats_24_25',
+    teamUrl: 'https://fbref.com/es/equipos/4ba7cbea/Estadisticas-de-Bournemouth'
+  },
+  {
+    tableName: 'leicester_city_stats_24_25',
+    teamUrl: 'https://fbref.com/es/equipos/a2d435b3/Estadisticas-de-Leicester-City'
+  },
+  {
+    tableName: 'southampton_city_stats_24_25',
+    teamUrl: 'https://fbref.com/es/equipos/33c895d4/Estadisticas-de-Southampton'
+  },
+  {
+    tableName: 'crystal_palace_city_stats_24_25',
+    teamUrl: 'https://fbref.com/es/equipos/47c64c55/Estadisticas-de-Crystal-Palace'
+  },
+  {
+    tableName: 'ipswich_stats_24_25',
+    teamUrl: 'https://fbref.com/es/equipos/b74092de/Estadisticas-de-Ipswich-Town'
+  },
+  {
+    tableName: 'wolverhampton_stats_24_25',
+    teamUrl: 'https://fbref.com/es/equipos/8cec06e1/Estadisticas-de-Wolverhampton-Wanderers'
+  },
+  {
+    tableName: 'everton_stats_24_25',
+    teamUrl: 'https://fbref.com/es/equipos/d3fd31cc/Estadisticas-de-Everton'
+  },
+]
+async function premier() {
+  //=============================== SEARCH AND SAVE DATA =======================//
+  console.log("\n");
+  console.log(`============== SEARCH AND SAVE DATA ==================`)
+  for (let i = 0; i < premierTeams.length; i++) {
+    let currentTeam = premierTeams[i];
+    await searchAndSaveData(currentTeam.teamUrl,premierXpath,noOfPlayers,currentTeam.tableName); 
+  }
+  //=============================== ANALYZE  =======================//
+  let premierAnalyzed = []; 
+  console.log("\n");
+  console.log(`================ TEAM ANALYSIS ======================`)
+  for (let i = 0; i < premierTeams.length; i++) {
+    let currentTeam = premierTeams[i];
+    console.log("\n");
+    console.log(`============== ${currentTeam.tableName} ==========`)
+    let data = await analyzeSeason(currentTeam.tableName);
+    premierAnalyzed .push(data);
+    console.log(data);
+  }
+  console.log("\n");
+  console.log(`=============== LEAGUE ANALYSIS =====================`)
+  let seasonMaxStats = maxLeagueAnalysis(premierAnalyzed);
+  let bestOfpremier = getBestOfTheSeasonStats(premierAnalyzed,seasonMaxStats);
+  console.log(bestOfpremier);
+}
 // MAIN
 
 // await ligaMx();
 // await laLiga();
+await premier();
