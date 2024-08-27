@@ -8,13 +8,16 @@ export default async function searchAndSaveData(teamUrl,teamXpath,teamPlayerCoun
     let updated_at = await checkTableDate(tableName);
     if (updated_at === null) { // THERE IS NOT A TABLE WITH THAT NAME
       console.log("Table not found, searching info...");
-      let searchedData = await searchData(teamUrl,teamXpath,teamPlayerCount); // SEARCH DATA
-      if (searchData != []) { // IF SEARCH WAS SUCCESFUL
+      let searchedData = [];
+      searchedData = await searchData(teamUrl,teamXpath,teamPlayerCount); // SEARCH DATA
+      if (searchedData != null && searchData != []) { // IF SEARCH WAS SUCCESFUL
         await saveData(searchedData, tableName); // returns true or false
         return;
+      } else {
+        console.log(`Data not saved for ${tableName}`);
+        return;
       }
-      console.log("Data not found");
-      return;
+      
     } else { // IF TABLE IS FOUND
       console.log("Table found, analyzing if info is up to date...");
       console.log("Info is from: " + updated_at);
