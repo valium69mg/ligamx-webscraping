@@ -1,6 +1,7 @@
 import searchData from './searchData.js';
-import { saveData , retrieveData } from './postgresDriver.js';
+import { saveData , retrieveData, checkTableDate,checkIfUpdateNeeded } from './postgresDriver.js';
 import analyzeSeason from './analyzeSeason.js';
+
 //========================== LA LIGA =========================================//
 
 // FC BARCELONA
@@ -59,7 +60,9 @@ const pachucaUrl = "https://fbref.com/es/equipos/1be8d2e3/Estadisticas-de-Pachuc
 const ligamxXpath = '//*[@id="stats_standard_31"]/tbody/';
 const ligamxPlayerCount = 20;
 // SANTOS LAGUNA
+const santosUrl = "https://fbref.com/es/equipos/03b65ba9/Estadisticas-de-Santos-Laguna";
 // CLUB TIJUANA
+const tijuanaUrl = "https://fbref.com/es/equipos/a42ddf2f/Estadisticas-de-Tijuana";
 // LEON
 // NECAXA
 // PUEBLA
@@ -70,12 +73,34 @@ const ligamxPlayerCount = 20;
 
 //=============================== SEARCH AND SAVE DATA =======================//
 
-// PROGRAM TO SEARCH AND SAVE DATA
-let tableName = 'pachuca_stats_24_25';
-let searchedData = await searchData(pachucaUrl,ligamxXpath,ligamxPlayerCount);
-if (searchData != []) { // IF SEARCH WAS SUCCESFUL
-  await saveData(searchedData, tableName); // returns true or false
-}
+async function searchAndSaveData(teamUrl,teamXpath,teamPlayerCount,tableName) {
+  // PROGRAM TO SEARCH AND SAVE DATA
+  let updated_at = await checkTableDate(tableName);
+  if (updated_at === null) { // THERE IS NOT A TABLE WITH THAT NAME
+    console.log("Table not found, searching info...");
+    let searchedData = await searchData(teamUrl,teamXpath,teamPlayerCount); // SEARCH DATA
+    if (searchData != []) { // IF SEARCH WAS SUCCESFUL
+      await saveData(searchedData, tableName); // returns true or false
+    }
+  } else { // IF TABLE IS FOUND
+    console.log("Table found, analyzing if info is up to date...");
+    console.log("Info is from: " + updated_at);
+    let checkIfUpdate = checkIfUpdateNeeded(updated_at);
+    if (checkIfUpdate == true) { // UPDATE NEEDED
+      console.log("Table found is not up to date, procceding to updating the info");
+      let searchedData = await searchData(teamUrl,teamXpath,teamPlayerCount);
+      if (searchData != []) { // IF SEARCH WAS SUCCESFUL
+        await saveData(searchedData, tableName); // returns true or false
+      }
+    }
+    
+  }
+};
 
-//let data = await analyzeSeason('atlas_stats_24_25');
+// TEAM TO SEARCH AND SAVE
+let tableName = 'tijuana_stats_24_25';
+await searchAndSaveData(tijuanaUrl,ligamxXpath,ligamxPlayerCount,tableName); 
+
+//=============================== ANALYZE  =======================//
+//let data = await analyzeSeason('pachuca_stats_24_25');
 //console.log(data);
