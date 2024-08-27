@@ -54,6 +54,7 @@ async function checkTableDate(tableName) {
 
 async function saveData(data,tableName) {
     const client = new Client(pgConfig);
+    let result; // bool
     try {  
         // ESTABLISH CONNECTION WITH THE POSTGRES DB
         await client.connect();
@@ -89,13 +90,14 @@ async function saveData(data,tableName) {
             }
         }
         console.log(`${tableName} stats saved on the database.`);
-        return true;
+        result = true;
     }catch(e) {
         console.log(`${tableName} stats could not be saved on the database!`)
         console.log(e);
-        return false;
+        result = false;
     }finally {
         await client.end();
+        return result;
     }
 };
 
