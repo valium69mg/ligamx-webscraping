@@ -98,3 +98,137 @@ export default async function analyzeSeason(tableName) {
     
     return analyzedData;
   };
+
+
+function printTeamAnalysis(data) {
+  console.log("Max Goals: " + data.maxGoals.amount + " => " + data.maxGoals.name);
+  console.log("Max Assists: " + data.maxAssists.amount + " => " + data.maxAssists.name);
+  console.log("Max G/A: " + data.maxGoalsAndAssists.amount + " => " + data.maxGoalsAndAssists.name);
+  console.log("Max Progressive Carries: " + data.maxProgressionCarries.amount + " => " + data.maxProgressionCarries.name);
+  console.log("Max Progressive Pass: " + data.maxProgressionPass.amount + " => " + data.maxProgressionPass.name);
+  console.log("Max Progressive Pass Rec: " + data.maxProgressionReceived.amount + " => " + data.maxProgressionReceived.name);
+  console.log("Max Time Played: " + data.maxTimePlayed.amount + " => " + data.maxTimePlayed.name);
+  console.log("Max Yellow Cards: " + data.maxYellowCards.amount + " => " + data.maxYellowCards.name);
+  console.log("Max Red Cards: " + data.maxRedCards.amount + " => " + data.maxRedCards.name);
+}
+
+function maxLeagueAnalysis(league) {
+  // ANALYZE LEAGUE 
+  let maxGoals = 0;
+  let maxAssists = 0;
+  let maxGoalsAndAssists = 0;
+  let maxProgressionCarries = 0;
+  let maxProgressionPass = 0;
+  let maxProgressionReceived = 0;
+  let maxTimePlayed = 0;
+  let maxYellowCards = 0;
+  let maxRedCards = 0;
+  for (let i = 0; i < league.length; i++) {
+    let currentTeam = league[i];
+    // GOALS
+    if (currentTeam.maxGoals.amount > maxGoals) {
+      maxGoals = currentTeam.maxGoals.amount;
+    }
+    // ASSISTS
+    if (currentTeam.maxAssists.amount > maxAssists) {
+      maxAssists = currentTeam.maxAssists.amount;
+    }
+    // G/A
+    if (currentTeam.maxGoalsAndAssists.amount > maxGoalsAndAssists) {
+      maxGoalsAndAssists = currentTeam.maxGoalsAndAssists.amount;
+    }
+    // Max progression carries
+    if (currentTeam.maxProgressionCarries.amount > maxProgressionCarries) {
+      maxProgressionCarries = currentTeam.maxProgressionCarries.amount;
+    }
+    // Max progression pass
+    if (currentTeam.maxProgressionPass.amount > maxProgressionPass) {
+      maxProgressionPass = currentTeam.maxProgressionPass.amount;
+    }
+    // Max progression pass received
+    if (currentTeam.maxProgressionReceived.amount > maxProgressionReceived) {
+      maxProgressionReceived = currentTeam.maxProgressionReceived.amount;
+    }
+    // Time played
+    if (currentTeam.maxTimePlayed.amount > maxTimePlayed) {
+      maxTimePlayed = currentTeam.maxTimePlayed.amount;
+    }
+    // Yellow Card
+    if (currentTeam.maxYellowCards.amount > maxYellowCards) {
+      maxYellowCards = currentTeam.maxYellowCards.amount;
+    }
+    // Red Card
+    if (currentTeam.maxRedCards.amount > maxRedCards) {
+      maxRedCards = currentTeam.maxYellowCards.amount;
+    }
+  }
+  // RETURN DICT WITH LEAGUE MAXES
+  return  {
+    maxGoals: maxGoals,
+    maxAssists: maxAssists,
+    maxGoalsAndAssists: maxGoalsAndAssists,
+    maxProgressionCarries: maxProgressionCarries,
+    maxProgressionPass: maxProgressionPass,
+    maxProgressionReceived: maxProgressionReceived,
+    maxYellowCards: maxYellowCards,
+    maxRedCards: maxRedCards,
+  }
+
+};
+
+function getBestOfTheSeasonStats(analyzedSeason,seasonStats) {
+  let bestOfTheSeason = {
+    maxGoals: [],
+    maxAssists:[],
+    maxGoalsAndAssists: [],
+    maxProgressionCarries: [],
+    maxProgressionPass: [],
+    maxProgressionReceived: [],
+    maxYellowCards: [],
+    maxRedCards: [],
+  }
+  for (let i = 0; i < analyzedSeason.length; i++) {
+    let currentTeam = analyzedSeason[i];
+    // GOALS
+    if (currentTeam.maxGoals.amount == seasonStats.maxGoals) {
+      bestOfTheSeason.maxGoals.push(currentTeam.maxGoals);
+    }
+    // ASSISTS
+    if (currentTeam.maxAssists.amount == seasonStats.maxAssists) {
+      bestOfTheSeason.maxAssists.push(currentTeam.maxAssists);
+    }
+    // G/A
+    if (currentTeam.maxGoalsAndAssists.amount == seasonStats.maxGoalsAndAssists) {
+      bestOfTheSeason.maxGoalsAndAssists.push(currentTeam.maxGoalsAndAssists);
+    }
+    // Max progression carries
+    if (currentTeam.maxProgressionCarries.amount == seasonStats.maxProgressionCarries) {
+      bestOfTheSeason.maxProgressionCarries.push(currentTeam.maxProgressionCarries);
+    }
+    // Max progression pass
+    if (currentTeam.maxProgressionPass.amount == seasonStats.maxProgressionPass) {
+      bestOfTheSeason.maxProgressionPass.push(currentTeam.maxProgressionPass);
+  
+    }
+    // Max progression pass received
+    if (currentTeam.maxProgressionReceived.amount == seasonStats.maxProgressionReceived) {
+      bestOfTheSeason.maxProgressionReceived.push(currentTeam.maxProgressionReceived);
+    }
+    // Time played
+    if (currentTeam.maxTimePlayed.amount == seasonStats.maxTimePlayed) {
+      bestOfTheSeason.maxTimePlayed.push(currentTeam.maxTimePlayed);
+    }
+    // Yellow Card
+    if (currentTeam.maxYellowCards.amount == seasonStats.maxYellowCards) {
+      bestOfTheSeason.maxYellowCards.push(currentTeam.maxYellowCards);
+    }
+    // Red Card
+    if (currentTeam.maxRedCards.amount == seasonStats.maxRedCards) {
+      bestOfTheSeason.maxRedCards.push(currentTeam.maxRedCards);
+    }
+  }
+  return bestOfTheSeason;
+}
+
+
+export {printTeamAnalysis,maxLeagueAnalysis,getBestOfTheSeasonStats}
