@@ -13,24 +13,21 @@ export default async function searchAndSaveData(teamUrl,teamXpath,teamPlayerCoun
       if (searchedData != null && searchData != []) { // IF SEARCH WAS SUCCESFUL
         await saveData(searchedData, tableName); // returns true or false
         return;
-      } else {
-        console.log(`Data not saved for ${tableName}`);
+      } 
+      console.log(`Data not saved for ${tableName}`);
+      return;
+    } 
+    // IF TABLE IS FOUND
+    console.log("Table found, analyzing if info is up to date...");
+    console.log("Info is from: " + updated_at);
+    let checkIfUpdate = checkIfUpdateNeeded(updated_at);
+    if (checkIfUpdate == true) { // UPDATE NEEDED
+      console.log("Table found is not up to date, procceding to updating the info");
+      let searchedData = await searchData(teamUrl,teamXpath,teamPlayerCount);
+      if (searchData != []) { // IF SEARCH WAS SUCCESFUL
+        await saveData(searchedData, tableName); // returns true or false
         return;
       }
-      
-    } else { // IF TABLE IS FOUND
-      console.log("Table found, analyzing if info is up to date...");
-      console.log("Info is from: " + updated_at);
-      let checkIfUpdate = checkIfUpdateNeeded(updated_at);
-      if (checkIfUpdate == true) { // UPDATE NEEDED
-        console.log("Table found is not up to date, procceding to updating the info");
-        let searchedData = await searchData(teamUrl,teamXpath,teamPlayerCount);
-        if (searchData != []) { // IF SEARCH WAS SUCCESFUL
-          await saveData(searchedData, tableName); // returns true or false
-          return;
-        }
-      }
-      
     }
   };
   
