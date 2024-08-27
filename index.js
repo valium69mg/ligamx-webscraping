@@ -24,10 +24,18 @@ const barcelonaUrl2223 = "https://fbref.com/es/equipos/206d90db/2022-2023/c12/Es
 // 21-22 season stats link
 const barcelonaUrl2122 = "https://fbref.com/en/squads/206d90db/2021-2022/s11323/Barcelona-Stats";
 
+// CHIVAS
+const chivasUrl = "https://fbref.com/es/equipos/c02b0f7a/Estadisticas-de-Guadalajara";
+const chivasXpathPrefix = '//*[@id="stats_standard_31"]/tbody/';
+const chivasPlayerCount = 25;
 
+// AMERICA
+const americaUrl = "https://fbref.com/es/equipos/18d3c3a3/Estadisticas-de-America";
+const americaXpath = '//*[@id="stats_standard_31"]/tbody/';
+const americaPlayerCount = 28;
 // PROGRAM TO SEARCH AND SAVE DATA
-// let data = await searchData(cruzAzulUrl2324,cruzAzulPlayersCount,xpathPrefix);
-// await saveData(data, 'cruz_azul_stats_23_24');
+//let data = await searchData(americaUrl,americaPlayerCount,americaXpath);
+// await saveData(data, 'america_stats_24_25');
 
 // ANALYZE DATA 
 // ANALYZE 1 SEASON OF A TEAM
@@ -126,5 +134,5 @@ async function analyzeSeason(tableName) {
   return analyzedData;
 };
 
-let data = await analyzeSeason('fc_barcelona_stats_24_25');
+let data = await analyzeSeason('america_stats_24_25');
 console.log(data);
