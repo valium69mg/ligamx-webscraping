@@ -11,7 +11,6 @@ const client = new Client({
 });
 
 async function saveData(data,tableName) {
-    let result;
     try {  
         // ESTABLISH CONNECTION WITH THE POSTGRES DB
         await client.connect();
@@ -42,29 +41,26 @@ async function saveData(data,tableName) {
                 [player['name'],player['pos'],player['country'],player['numberOfMatches'],player['numberOfStartingMatches'],player['numberOfMinutesPlayed'],player['numberOfGoals'],player['numberOfAssist'],player['numberOfYellowCards'],player['numberOfRedCards'],player['numberOfProgressiveCarrying'],player['numberOfProgressivePasses'],player['numberOfProgressivePassesReceived']]);     
         }
         console.log(`${tableName} stats saved on the database.`);
-        result = true;
+        return true;
     }catch(e) {
-        result = false;
         console.log(`${tableName} stats could not be saved on the database!`)
         console.log(e);
+        return false;
     }finally {
         await client.end();
-        return result;
     }
 };
 
-async function retrieveData(tableName) {
-    let result;
+async function retrieveData(tableName) { 
     try {
         await client.connect();
-        result = await client.query(`SELECT * FROM ${tableName}`);
+        let result = await client.query(`SELECT * FROM ${tableName}`);
+        return result;
     }catch(e) {
-        result = null;
         console.log(`${tableName} stats could not be retrieved from the database!`);
         console.log(e);
     }finally {
         await client.end();
-        return result;
     }
 }
 
