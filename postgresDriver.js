@@ -46,7 +46,6 @@ async function checkTableDate(tableName) {
         let updated_at = results.rows[0].updated_at;
         return updated_at;
     }catch(e) {
-        console.log(new Error(`relation ${tableName} does not exist`));
         return null;
     }finally {
         await client.end();
