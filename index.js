@@ -89,9 +89,10 @@ async function ligaMx() {
     await searchAndSaveData(currentTeam.teamUrl,ligamxXpath,18,currentTeam.tableName); 
   }
   //=============================== ANALYZE  =======================//
-  let ligaMxAnalyzed = []; 
+  let ligaMxAnalyzed = []; // variable for analized teams as a list of dictionaries
   console.log("\n");
   console.log(`================ TEAM ANALYSIS ======================`)
+  // LOOP TO ADD TO ANALIZED TEAMS TO THE LIST
   for (let i = 0; i < ligaMxTeams.length; i++) {
     let currentTeam = ligaMxTeams[i];
     console.log("\n");
@@ -102,7 +103,9 @@ async function ligaMx() {
   }
   console.log("\n");
   console.log(`=============== LEAGUE ANALYSIS =====================`)
+  // GET MAX PARAMETERS FROM LEAGUE
   let seasonMaxStats = maxLeagueAnalysis(ligaMxAnalyzed);
+  // SEARCH FOR THE PLAYERS WITH STATS EQUAL TO THE MAX PARAMETERS
   let bestOfLigaMx = getBestOfTheSeasonStats(ligaMxAnalyzed,seasonMaxStats);
   console.log(bestOfLigaMx);
 }
