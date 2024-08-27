@@ -8,11 +8,8 @@ import { retrieveData } from "./postgresDriver.js";
 export default async function analyzeSeason(tableName) {
     // TRY TO CONSULT THE DB FOR THE SPECIFIC TABLE
     let results = [];
-    try {
-        results = await retrieveData(tableName);
-    }catch(e) {
-        console.log(e);
-        console.log("Table could not be identified or data is corrupted.");
+    results = await retrieveData(tableName);
+    if (results == []) {
         return results;
     }
     // loop through results
