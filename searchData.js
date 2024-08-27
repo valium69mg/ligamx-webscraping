@@ -23,14 +23,15 @@ let numberOfProgressivePassesReceivedSubfix = '/td[22]';
 
 export default async function searchData(url,xpathPrefix,noOfPlayers) {
   let driver;
+  let maxPlayers = 0;
+  let data = [];
   try {
     // build driver
     driver = await new Builder().forBrowser(Browser.CHROME)
                         .setChromeOptions(new chrome.Options().addArguments('--headless').windowSize(screen))                            
                         .build();
     // setup driver connection
-    await driver.get(url);
-    let data = [];
+    await driver.get(url);  
     // loop through table to retrieve data into a list of dictionaries
     for (let i = 1; i <= noOfPlayers; i++) {
         let playerStats = {};
@@ -92,11 +93,12 @@ export default async function searchData(url,xpathPrefix,noOfPlayers) {
         playerStats['numberOfProgressivePassesReceived'] = numberOfProgressivePassesReceived;
         // retrieve data
         data.push(playerStats);
+        maxPlayers += 1;
     }
     return data;
   } catch (e) {
-    console.log(e);
-    return [];
+    console.log(`Error adding player ${maxPlayers + 1} on table. Registered only ${maxPlayers} players.`);
+    return data;
   } finally {
     await driver.quit(); 
   }
