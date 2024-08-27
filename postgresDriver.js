@@ -64,7 +64,7 @@ async function retrieveData(tableName) {
     try {
         await client.connect();
         let result = await client.query(`SELECT * FROM ${tableName}`);
-        return result;
+        return result.rows;
     }catch(e) {
         console.log(`${tableName} stats could not be retrieved from the database!`);
         console.log(e);
