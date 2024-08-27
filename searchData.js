@@ -16,6 +16,7 @@ let numberOfProgressivePassesSubfix = '/td[21]';
 let numberOfProgressivePassesReceivedSubfix = '/td[22]';
 
 export default async function searchData(url,xpathPrefix,noOfPlayers) {
+  let driver;
   try {
     // build driver
     driver = await new Builder().forBrowser(Browser.CHROME).build();
@@ -84,11 +85,11 @@ export default async function searchData(url,xpathPrefix,noOfPlayers) {
         // retrieve data
         data.push(playerStats);
     }
+    return data;
   } catch (e) {
     console.log(e);
-    return data;
+    return [];
   } finally {
-    await driver.quit();
-    return data;
+    await driver.quit(); 
   }
 };
