@@ -1,6 +1,8 @@
 import analyzeSeason from './analyzeSeason.js';
 import { printTeamAnalysis, maxLeagueAnalysis,getBestOfTheSeasonStats } from './analyzeSeason.js';
 import searchAndSaveData from './searchAndSaveData.js';
+
+const noOfPlayers = 25;
 //=============================== LIGA MX ====================================//
 const ligamxXpath = '//*[@id="stats_standard_31"]/tbody/';
 let ligaMxTeams = [
@@ -198,7 +200,7 @@ async function laLiga() {
   console.log(`============== SEARCH AND SAVE DATA ==================`)
   for (let i = 0; i < laLigaTeams.length; i++) {
     let currentTeam = laLigaTeams[i];
-    await searchAndSaveData(currentTeam.teamUrl,laligaXpath,11,currentTeam.tableName); 
+    await searchAndSaveData(currentTeam.teamUrl,laligaXpath,noOfPlayers,currentTeam.tableName); 
   }
   //=============================== ANALYZE  =======================//
   let laLigaAnalyzed = []; 
