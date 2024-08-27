@@ -10,6 +10,15 @@ const client = new Client({
     database: 'postgres',
 });
 
+// timestamp parse 
+pg.types.setTypeParser(1114, function(stringValue) {
+    return stringValue;  //1114 for time without timezone type
+  });
+  
+pg.types.setTypeParser(1082, function(stringValue) {
+    return stringValue;  //1082 for date type
+});
+
 async function saveData(data,tableName) {
     try {  
         // ESTABLISH CONNECTION WITH THE POSTGRES DB
@@ -59,6 +68,7 @@ async function retrieveData(tableName) {
     }catch(e) {
         console.log(`${tableName} stats could not be retrieved from the database!`);
         console.log(e);
+        return [];
     }finally {
         await client.end();
     }
