@@ -107,8 +107,6 @@ async function ligaMx() {
   console.log(bestOfLigaMx);
 }
 
-// await ligaMx();
-
 //=============================== LA LIGA ====================================//
 const laligaXpath = '//*[@id="stats_standard_12"]/tbody/';
 let laLigaTeams = [
@@ -221,4 +219,8 @@ async function laLiga() {
   console.log(bestOfLigaMx);
 }
 
-await laLiga();
+
+// MAIN
+
+// await ligaMx();
+// await laLiga();
