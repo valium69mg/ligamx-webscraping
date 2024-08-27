@@ -1,4 +1,10 @@
 import {By, Builder, Browser} from 'selenium-webdriver';
+import chrome from 'selenium-webdriver/chrome.js';
+
+const screen = {
+  width: 640,
+  height: 480
+};
 
 // web scrapping config 
 let nameSubfix = '/th';
@@ -19,7 +25,9 @@ export default async function searchData(url,xpathPrefix,noOfPlayers) {
   let driver;
   try {
     // build driver
-    driver = await new Builder().forBrowser(Browser.CHROME).build();
+    driver = await new Builder().forBrowser(Browser.CHROME)
+                        .setChromeOptions(new chrome.Options().addArguments('--headless').windowSize(screen))                            
+                        .build();
     // setup driver connection
     await driver.get(url);
     let data = [];
