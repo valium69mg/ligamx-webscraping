@@ -9,7 +9,7 @@ export default async function analyzeSeason(tableName) {
     // TRY TO CONSULT THE DB FOR THE SPECIFIC TABLE
     let results = [];
     results = await retrieveData(tableName);
-    if (results == []) {
+    if (results == []) { // DATA COULD NOT BE RETRIEVED
         return results;
     }
     // loop through results
