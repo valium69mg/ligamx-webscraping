@@ -15,7 +15,7 @@ let numberOfProgressiveCarryingSubfix = '/td[20]';
 let numberOfProgressivePassesSubfix = '/td[21]';
 let numberOfProgressivePassesReceivedSubfix = '/td[22]';
 
-export default async function searchData(url,noOfPlayers,xpathPrefix) {
+export default async function searchData(url,xpathPrefix,noOfPlayers) {
   let driver;
   try {
     // build driver
