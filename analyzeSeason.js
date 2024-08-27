@@ -1,5 +1,5 @@
 //=============================== ANALYZE DATA ====================================//
-import { retrieveData } from "./postgresDriver";
+import { retrieveData } from "./postgresDriver.js";
 // ANALYZE DATA 
 // ANALYZE 1 SEASON OF A TEAM
 // MOST GOALS, MOST ASSISTS, MOST G/A, MOST Progression, Most Time Played, Most Cards
