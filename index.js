@@ -97,9 +97,10 @@ for (let i = 0; i < ligaMxTeams.length; i++) {
   console.log(`============== ${currentTeam.tableName} ==========`)
   let data = await analyzeSeason(currentTeam.tableName);
   ligaMxAnalyzed.push(data);
-  printTeamAnalysis(data)
+  console.log(data);
 }
 
+console.log("\n");
 console.log(`=============== LEAGUE ANALYSIS =====================`)
 let seasonMaxStats = maxLeagueAnalysis(ligaMxAnalyzed);
 let bestOfLigaMx = getBestOfTheSeasonStats(ligaMxAnalyzed,seasonMaxStats);
