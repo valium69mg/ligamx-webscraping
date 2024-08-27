@@ -2,13 +2,14 @@ import pg from 'pg'
 const { Client } = pg;
 
 // database config
-const client = new Client({
+const pgConfig = {
     user: 'postgres',
     password: 'postgres',
     host: '127.0.0.1',
     port: 5432,
     database: 'postgres',
-});
+};
+const client = new Client(pgConfig);
 
 // timestamp parse 
 pg.types.setTypeParser(1114, function(stringValue) {
@@ -19,7 +20,41 @@ pg.types.setTypeParser(1082, function(stringValue) {
     return stringValue;  //1082 for date type
 });
 
+// INFO WILL UPDATE EVERY 24 HOURS FOR EVERY TEAM
+function checkIfUpdateNeeded(updated_at) { // format: 2024-08-27 08:25:16.245305
+    let timeZone = ' GMT-6';
+    updated_at = updated_at + timeZone;
+    let tableDate = Date.parse(updated_at); // Date when the table info was updated
+    let nowDate = Date.now();
+    // check dates 
+    let result = nowDate - tableDate; // milliseconds passed since table was updated
+    result = result/1000; // seconds passed since table was updated;
+    let dayInSeconds = 86400; // 24 hours into seconds
+    if (result > dayInSeconds) {
+        console.log("Info needs updating.");
+        return true;
+    }
+    console.log("Info does not need updating.")
+    return false;
+}
+
+async function checkTableDate(tableName) {
+    const client = new Client(pgConfig);
+    try {
+        await client.connect();
+        let results = await client.query(`SELECT * FROM ${tableName} LIMIT 1`);
+        let updated_at = results.rows[0].updated_at;
+        return updated_at;
+    }catch(e) {
+        console.log(e);
+        return [];
+    }finally {
+        await client.end();
+    }
+}
+
 async function saveData(data,tableName) {
+    const client = new Client(pgConfig);
     try {  
         // ESTABLISH CONNECTION WITH THE POSTGRES DB
         await client.connect();
@@ -61,6 +96,7 @@ async function saveData(data,tableName) {
 };
 
 async function retrieveData(tableName) { 
+    const client = new Client(pgConfig);
     try {
         await client.connect();
         let result = await client.query(`SELECT * FROM ${tableName}`);
@@ -74,4 +110,4 @@ async function retrieveData(tableName) {
     }
 }
 
-export {saveData,retrieveData};
+export {saveData,retrieveData,checkTableDate,checkIfUpdateNeeded};
