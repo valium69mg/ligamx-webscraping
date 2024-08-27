@@ -78,30 +78,145 @@ let ligaMxTeams = [
   },
 ];
 
-//=============================== SEARCH AND SAVE DATA =======================//
-console.log("\n");
-console.log(`============== SEARCH AND SAVE DATA ==================`)
-for (let i = 0; i < ligaMxTeams.length; i++) {
-  let currentTeam = ligaMxTeams[i];
-  await searchAndSaveData(currentTeam.teamUrl,ligamxXpath,18,currentTeam.tableName); 
-}
-
-//=============================== ANALYZE  =======================//
-
-let ligaMxAnalyzed = []; 
-console.log("\n");
-console.log(`================ TEAM ANALYSIS ======================`)
-for (let i = 0; i < ligaMxTeams.length; i++) {
-  let currentTeam = ligaMxTeams[i];
+async function ligaMx() {
+  //=============================== SEARCH AND SAVE DATA =======================//
   console.log("\n");
-  console.log(`============== ${currentTeam.tableName} ==========`)
-  let data = await analyzeSeason(currentTeam.tableName);
-  ligaMxAnalyzed.push(data);
-  console.log(data);
+  console.log(`============== SEARCH AND SAVE DATA ==================`)
+  for (let i = 0; i < ligaMxTeams.length; i++) {
+    let currentTeam = ligaMxTeams[i];
+    await searchAndSaveData(currentTeam.teamUrl,ligamxXpath,18,currentTeam.tableName); 
+  }
+  //=============================== ANALYZE  =======================//
+  let ligaMxAnalyzed = []; 
+  console.log("\n");
+  console.log(`================ TEAM ANALYSIS ======================`)
+  for (let i = 0; i < ligaMxTeams.length; i++) {
+    let currentTeam = ligaMxTeams[i];
+    console.log("\n");
+    console.log(`============== ${currentTeam.tableName} ==========`)
+    let data = await analyzeSeason(currentTeam.tableName);
+    ligaMxAnalyzed.push(data);
+    console.log(data);
+  }
+  console.log("\n");
+  console.log(`=============== LEAGUE ANALYSIS =====================`)
+  let seasonMaxStats = maxLeagueAnalysis(ligaMxAnalyzed);
+  let bestOfLigaMx = getBestOfTheSeasonStats(ligaMxAnalyzed,seasonMaxStats);
+  console.log(bestOfLigaMx);
 }
 
-console.log("\n");
-console.log(`=============== LEAGUE ANALYSIS =====================`)
-let seasonMaxStats = maxLeagueAnalysis(ligaMxAnalyzed);
-let bestOfLigaMx = getBestOfTheSeasonStats(ligaMxAnalyzed,seasonMaxStats);
-console.log(bestOfLigaMx);
+// await ligaMx();
+
+//=============================== LA LIGA ====================================//
+const laligaXpath = '//*[@id="stats_standard_12"]/tbody/';
+let laLigaTeams = [
+  {
+    tableName: "fc_barcelona_stats_24_25",
+    teamUrl: "https://fbref.com/es/equipos/206d90db/Estadisticas-de-Barcelona",
+  },
+  {
+    tableName: "real_madrid_stats_24_25",
+    teamUrl: "https://fbref.com/es/equipos/53a2f082/Estadisticas-de-Real-Madrid",
+  },
+  {
+    tableName: "villareal_stats_24_25",
+    teamUrl: "https://fbref.com/es/equipos/2a8183b3/Estadisticas-de-Villarreal",
+  },
+  {
+    tableName: "celta_de_vigo_stats_24_25",
+    teamUrl: "https://fbref.com/es/equipos/f25da7fb/Estadisticas-de-Celta-Vigo",
+  },
+  {
+    tableName: "atletico_de_madrid_stats_24_25",
+    teamUrl: "https://fbref.com/es/equipos/db3b9613/Estadisticas-de-Atletico-Madrid",
+  },
+  {
+    tableName: "leganes_stats_24_25",
+    teamUrl: "https://fbref.com/es/equipos/7c6f2c78/Estadisticas-de-Leganes",
+  },
+  {
+    tableName: "osasuna_stats_24_25",
+    teamUrl: "https://fbref.com/es/equipos/03c57e2b/Estadisticas-de-Osasuna",
+  },
+  {
+    tableName: "rayo_vallecano_stats_24_25",
+    teamUrl: "https://fbref.com/es/equipos/98e8af82/Estadisticas-de-Rayo-Vallecano",
+  },
+  {
+    tableName: "real_sociedad_stats_24_25",
+    teamUrl: "https://fbref.com/es/equipos/e31d1cd9/Estadisticas-de-Real-Sociedad",
+  },
+  {
+    tableName: "valladolid_stats_24_25",
+    teamUrl: "https://fbref.com/es/equipos/17859612/Estadisticas-de-Valladolid",
+  },
+  {
+    tableName: "getafe_stats_24_25",
+    teamUrl: "https://fbref.com/es/equipos/7848bd64/Estadisticas-de-Getafe",
+  },
+  {
+    tableName: "real_betis_stats_24_25",
+    teamUrl: "https://fbref.com/es/equipos/fc536746/Estadisticas-de-Real-Betis",
+  },
+  {
+    tableName: "sevilla_stats_24_25",
+    teamUrl: "https://fbref.com/es/equipos/ad2be733/Estadisticas-de-Sevilla",
+  },
+  {
+    tableName: "mallorca_stats_24_25",
+    teamUrl: "https://fbref.com/es/equipos/2aa12281/Estadisticas-de-Mallorca",
+  },
+  {
+    tableName: "las_palmas_stats_24_25",
+    teamUrl: "https://fbref.com/es/equipos/0049d422/Estadisticas-de-Las-Palmas",
+  },
+  {
+    tableName: "athletic_stats_24_25",
+    teamUrl: "https://fbref.com/es/equipos/2b390eca/Estadisticas-de-Athletic-Club",
+  },
+  {
+    tableName: "alaves_stats_24_25",
+    teamUrl: "https://fbref.com/es/equipos/8d6fd021/Estadisticas-de-Alaves",
+  },
+  {
+    tableName: "girona_stats_24_25",
+    teamUrl: "https://fbref.com/es/equipos/9024a00a/Estadisticas-de-Girona",
+  },
+  {
+    tableName: "espanyol_stats_24_25",
+    teamUrl: "https://fbref.com/es/equipos/a8661628/Estadisticas-de-Espanyol",
+  },
+  {
+    tableName: "valencia_stats_24_25",
+    teamUrl: "https://fbref.com/es/equipos/dcc91a7b/Estadisticas-de-Valencia",
+  }
+]
+
+async function laLiga() {
+  //=============================== SEARCH AND SAVE DATA =======================//
+  console.log("\n");
+  console.log(`============== SEARCH AND SAVE DATA ==================`)
+  for (let i = 0; i < laLigaTeams.length; i++) {
+    let currentTeam = laLigaTeams[i];
+    await searchAndSaveData(currentTeam.teamUrl,laligaXpath,11,currentTeam.tableName); 
+  }
+  //=============================== ANALYZE  =======================//
+  let laLigaAnalyzed = []; 
+  console.log("\n");
+  console.log(`================ TEAM ANALYSIS ======================`)
+  for (let i = 0; i < laLigaTeams.length; i++) {
+    let currentTeam = laLigaTeams[i];
+    console.log("\n");
+    console.log(`============== ${currentTeam.tableName} ==========`)
+    let data = await analyzeSeason(currentTeam.tableName);
+    laLigaAnalyzed.push(data);
+    console.log(data);
+  }
+  console.log("\n");
+  console.log(`=============== LEAGUE ANALYSIS =====================`)
+  let seasonMaxStats = maxLeagueAnalysis(laLigaAnalyzed);
+  let bestOfLigaMx = getBestOfTheSeasonStats(laLigaAnalyzed,seasonMaxStats);
+  console.log(bestOfLigaMx);
+}
+
+await laLiga();

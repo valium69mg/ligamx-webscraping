@@ -11,7 +11,10 @@ export default async function searchAndSaveData(teamUrl,teamXpath,teamPlayerCoun
       let searchedData = await searchData(teamUrl,teamXpath,teamPlayerCount); // SEARCH DATA
       if (searchData != []) { // IF SEARCH WAS SUCCESFUL
         await saveData(searchedData, tableName); // returns true or false
-        }
+        return;
+      }
+      console.log("Data not found");
+      return;
     } else { // IF TABLE IS FOUND
       console.log("Table found, analyzing if info is up to date...");
       console.log("Info is from: " + updated_at);
@@ -21,6 +24,7 @@ export default async function searchAndSaveData(teamUrl,teamXpath,teamPlayerCoun
         let searchedData = await searchData(teamUrl,teamXpath,teamPlayerCount);
         if (searchData != []) { // IF SEARCH WAS SUCCESFUL
           await saveData(searchedData, tableName); // returns true or false
+          return;
         }
       }
       
