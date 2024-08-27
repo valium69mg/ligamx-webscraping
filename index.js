@@ -110,7 +110,7 @@ async function searchAndSaveData(teamUrl,teamXpath,teamPlayerCount,tableName) {
 // SEARCH AND SAVE
 for (let i = 0; i < ligaMxTeams.length; i++) {
   let currentTeam = ligaMxTeams[i];
-  await searchAndSaveData(currentTeam.tableName,ligamxXpath,18,currentTeam.tableName); 
+  await searchAndSaveData(currentTeam.teamUrl,ligamxXpath,18,currentTeam.tableName); 
 }
 
 // TEAM TO SEARCH AND SAVE
