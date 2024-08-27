@@ -1,7 +1,6 @@
-import searchData from './searchData.js';
-import { saveData , retrieveData, checkTableDate,checkIfUpdateNeeded } from './postgresDriver.js';
 import analyzeSeason from './analyzeSeason.js';
-
+import { printTeamAnalysis, maxLeagueAnalysis,getBestOfTheSeasonStats } from './analyzeSeason.js';
+import searchAndSaveData from './searchAndSaveData.js';
 //=============================== LIGA MX ====================================//
 const ligamxXpath = '//*[@id="stats_standard_31"]/tbody/';
 let ligaMxTeams = [
@@ -80,43 +79,28 @@ let ligaMxTeams = [
 ];
 
 //=============================== SEARCH AND SAVE DATA =======================//
-
-async function searchAndSaveData(teamUrl,teamXpath,teamPlayerCount,tableName) {
-  // PROGRAM TO SEARCH AND SAVE DATA
-  console.log("\n");
-  console.log(`============== ${tableName} ==========`)
-  let updated_at = await checkTableDate(tableName);
-  if (updated_at === null) { // THERE IS NOT A TABLE WITH THAT NAME
-    console.log("Table not found, searching info...");
-    let searchedData = await searchData(teamUrl,teamXpath,teamPlayerCount); // SEARCH DATA
-    if (searchData != []) { // IF SEARCH WAS SUCCESFUL
-      await saveData(searchedData, tableName); // returns true or false
-      }
-  } else { // IF TABLE IS FOUND
-    console.log("Table found, analyzing if info is up to date...");
-    console.log("Info is from: " + updated_at);
-    let checkIfUpdate = checkIfUpdateNeeded(updated_at);
-    if (checkIfUpdate == true) { // UPDATE NEEDED
-      console.log("Table found is not up to date, procceding to updating the info");
-      let searchedData = await searchData(teamUrl,teamXpath,teamPlayerCount);
-      if (searchData != []) { // IF SEARCH WAS SUCCESFUL
-        await saveData(searchedData, tableName); // returns true or false
-      }
-    }
-    
-  }
-};
-
-// SEARCH AND SAVE
+console.log("\n");
+console.log(`============== SEARCH AND SAVE DATA ==================`)
 for (let i = 0; i < ligaMxTeams.length; i++) {
   let currentTeam = ligaMxTeams[i];
   await searchAndSaveData(currentTeam.teamUrl,ligamxXpath,18,currentTeam.tableName); 
 }
 
-// TEAM TO SEARCH AND SAVE
-// 
-// 
-
 //=============================== ANALYZE  =======================//
-//let data = await analyzeSeason('sanluis_stats_24_25');
-//console.log(data);
+
+let ligaMxAnalyzed = []; 
+console.log("\n");
+console.log(`================ TEAM ANALYSIS ======================`)
+for (let i = 0; i < ligaMxTeams.length; i++) {
+  let currentTeam = ligaMxTeams[i];
+  console.log("\n");
+  console.log(`============== ${currentTeam.tableName} ==========`)
+  let data = await analyzeSeason(currentTeam.tableName);
+  ligaMxAnalyzed.push(data);
+  printTeamAnalysis(data)
+}
+
+console.log(`=============== LEAGUE ANALYSIS =====================`)
+let seasonMaxStats = maxLeagueAnalysis(ligaMxAnalyzed);
+let bestOfLigaMx = getBestOfTheSeasonStats(ligaMxAnalyzed,seasonMaxStats);
+console.log(bestOfLigaMx);
