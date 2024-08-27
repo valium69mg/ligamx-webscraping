@@ -31,10 +31,17 @@ export default async function searchData(url,xpathPrefix,noOfPlayers) {
                         .setChromeOptions(new chrome.Options().addArguments('--headless').windowSize(screen))                            
                         .build();
     // setup driver connection
-    await driver.get(url);  
+    try {
+      await driver.get(url); 
+    }catch(e) {
+      console.log(new Error("Could not GET team URL"));
+      return null;
+    }
+     
     // loop through table to retrieve data into a list of dictionaries
     for (let i = 1; i <= noOfPlayers; i++) {
-        let playerStats = {};
+      console.log(`Retrieving player number ${i}...`)  
+      let playerStats = {};
         let row = "tr[" + i + "]" ;
         // id 
         let id = i;
@@ -95,11 +102,10 @@ export default async function searchData(url,xpathPrefix,noOfPlayers) {
         data.push(playerStats);
         maxPlayers += 1;
     }
-    return data;
   } catch (e) {
     console.log(`Error adding player ${maxPlayers + 1} on table. Registered only ${maxPlayers} players.`);
-    return data;
   } finally {
     await driver.quit(); 
+    return data;
   }
 };
