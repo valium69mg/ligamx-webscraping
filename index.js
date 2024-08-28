@@ -1,9 +1,10 @@
 import analyzeSeason from './analyzeSeason.js';
-import { printTeamAnalysis, maxLeagueAnalysis,getBestOfTheSeasonStats } from './analyzeSeason.js';
+import { maxLeagueAnalysis,getBestOfTheSeasonStats } from './analyzeSeason.js';
 import searchAndSaveData from './searchAndSaveData.js';
-
+import {printSearchAndSaveLog,printTeamAnalysisLog,printTableNameLog,printLeagueAnalysisLog} from './consolePrint.js';
+// GLOBAL PARAMETERS
 const noOfPlayers = 22;
-//=============================== LIGA MX ====================================//
+// LA LIGA MX 
 const ligamxXpath = '//*[@id="stats_standard_31"]/tbody/';
 let ligaMxTeams = [
   {
@@ -80,29 +81,39 @@ let ligaMxTeams = [
   },
 ];
 
+// function: ligaMx
+
+// description: this function gathers data from the liga mx laLigaTeams. First it uses searchAndSaveData
+// function to retrieve the data, but first checks if the data is up to date (usually 24 hrs), if the data
+// needs updating it excecutes the web scraping functions from searchData.js, saves the data and returns
+// the data for maxLeagueAnalysis. If the data does not need updating it simply returns the data on the 
+// database.
+// Secondly, the function uses analyzeSeason to analyze each individual season of every team on the league
+// and pushes it to an array called ligaMxAnalyzed (array of analyzeSeason returns).
+// Then, the maxLeagueAnalysis function uses the array of analyzeSeason returns (ligaMxAnalyzed) and 
+// gets the max stats for every league as a variable called seasonMaxStats.
+// Lastly, the getBestOfTheSeasonStats function uses both ligaMxAnalyzed and seasonMaxStats in order to
+// obtain the best stats of the league as a dictionary.
+
 async function ligaMx() {
-  //=============================== SEARCH AND SAVE DATA =======================//
-  console.log("\n");
-  console.log(`============== SEARCH AND SAVE DATA ==================`)
+  // SEARCH AND SAVE DATA OF LA LIGA MX TEAMS
+  printSearchAndSaveLog();
   for (let i = 0; i < ligaMxTeams.length; i++) {
     let currentTeam = ligaMxTeams[i];
     await searchAndSaveData(currentTeam.teamUrl,ligamxXpath,18,currentTeam.tableName); 
   }
-  //=============================== ANALYZE  =======================//
+  // ANALYSIS OF THE RETRIEVED DATA (EITHER FRESHLY DATA UPDATED OR DATA WITH NO NEED TO UPDATE)
   let ligaMxAnalyzed = []; // variable for analized teams as a list of dictionaries
-  console.log("\n");
-  console.log(`================ TEAM ANALYSIS ======================`)
+  printTeamAnalysisLog();
   // LOOP TO ADD TO ANALIZED TEAMS TO THE LIST
   for (let i = 0; i < ligaMxTeams.length; i++) {
     let currentTeam = ligaMxTeams[i];
-    console.log("\n");
-    console.log(`============== ${currentTeam.tableName} ==========`)
+    printTableNameLog(currentTeam.tableName);
     let data = await analyzeSeason(currentTeam.tableName);
     ligaMxAnalyzed.push(data);
     console.log(data);
   }
-  console.log("\n");
-  console.log(`=============== LEAGUE ANALYSIS =====================`)
+  printLeagueAnalysisLog();
   // GET MAX PARAMETERS FROM LEAGUE
   let seasonMaxStats = maxLeagueAnalysis(ligaMxAnalyzed);
   // SEARCH FOR THE PLAYERS WITH STATS EQUAL TO THE MAX PARAMETERS
@@ -110,7 +121,7 @@ async function ligaMx() {
   console.log(bestOfLigaMx);
 }
 
-//=============================== LA LIGA ====================================//
+// LA LIGA
 const laligaXpath = '//*[@id="stats_standard_12"]/tbody/';
 let laLigaTeams = [
   {
@@ -194,35 +205,47 @@ let laLigaTeams = [
     teamUrl: "https://fbref.com/es/equipos/dcc91a7b/Estadisticas-de-Valencia",
   }
 ]
+// function: laLiga
+
+// description: this function gathers data from la liga teams. First it uses searchAndSaveData
+// function to retrieve the data, but first checks if the data is up to date (usually 24 hrs), if the data
+// needs updating it excecutes the web scraping functions from searchData.js, saves the data and returns
+// the data for maxLeagueAnalysis. If the data does not need updating it simply returns the data on the 
+// database.
+// Secondly, the function uses analyzeSeason to analyze each individual season of every team on the league
+// and pushes it to an array called laLigaAnalyzed (array of analyzeSeason returns).
+// Then, the maxLeagueAnalysis function uses the array of analyzeSeason returns (laLigaAnalyzed) and 
+// gets the max stats for every league as a variable called seasonMaxStats.
+// Lastly, the getBestOfTheSeasonStats function uses both laLigaAnalyzed and seasonMaxStats in order to
+// obtain the best stats of the league as a dictionary.
+
+
 
 async function laLiga() {
   //=============================== SEARCH AND SAVE DATA =======================//
-  console.log("\n");
-  console.log(`============== SEARCH AND SAVE DATA ==================`)
+  printSearchAndSaveLog();
   for (let i = 0; i < laLigaTeams.length; i++) {
     let currentTeam = laLigaTeams[i];
     await searchAndSaveData(currentTeam.teamUrl,laligaXpath,noOfPlayers,currentTeam.tableName); 
   }
   //=============================== ANALYZE  =======================//
   let laLigaAnalyzed = []; 
-  console.log("\n");
-  console.log(`================ TEAM ANALYSIS ======================`)
+  printTeamAnalysisLog();
   for (let i = 0; i < laLigaTeams.length; i++) {
     let currentTeam = laLigaTeams[i];
-    console.log("\n");
-    console.log(`============== ${currentTeam.tableName} ==========`)
+    printTableNameLog(currentTeam.tableName);
     let data = await analyzeSeason(currentTeam.tableName);
     laLigaAnalyzed.push(data);
     console.log(data);
   }
-  console.log("\n");
-  console.log(`=============== LEAGUE ANALYSIS =====================`)
+  printLeagueAnalysisLog();
   let seasonMaxStats = maxLeagueAnalysis(laLigaAnalyzed);
   let bestOfLigaMx = getBestOfTheSeasonStats(laLigaAnalyzed,seasonMaxStats);
   console.log(bestOfLigaMx);
 }
+
+// PREMIER LEAGUE 
 let premierXpath = '//*[@id="stats_standard_9"]/tbody/';
-//=============================== PREMIER LEAGUE ====================================//
 
 let premierTeams = [
   {
@@ -306,32 +329,45 @@ let premierTeams = [
     teamUrl: 'https://fbref.com/es/equipos/d3fd31cc/Estadisticas-de-Everton'
   },
 ]
+// function: premier
+
+// description: this function gathers data from premier league teams. First it uses searchAndSaveData
+// function to retrieve the data, but first checks if the data is up to date (usually 24 hrs), if the data
+// needs updating it excecutes the web scraping functions from searchData.js, saves the data and returns
+// the data for maxLeagueAnalysis. If the data does not need updating it simply returns the data on the 
+// database.
+// Secondly, the function uses analyzeSeason to analyze each individual season of every team on the league
+// and pushes it to an array called premierAnalyzed (array of analyzeSeason returns).
+// Then, the maxLeagueAnalysis function uses the array of analyzeSeason returns (premierAnalyzed) and 
+// gets the max stats for every league as a variable called seasonMaxStats.
+// Lastly, the getBestOfTheSeasonStats function uses both premierAnalyzed and seasonMaxStats in order to
+// obtain the best stats of the league as a dictionary.
+
+
 async function premier() {
   //=============================== SEARCH AND SAVE DATA =======================//
-  console.log("\n");
-  console.log(`============== SEARCH AND SAVE DATA ==================`)
+  printSearchAndSaveLog();
   for (let i = 0; i < premierTeams.length; i++) {
     let currentTeam = premierTeams[i];
     await searchAndSaveData(currentTeam.teamUrl,premierXpath,noOfPlayers,currentTeam.tableName); 
   }
   //=============================== ANALYZE  =======================//
   let premierAnalyzed = []; 
-  console.log("\n");
-  console.log(`================ TEAM ANALYSIS ======================`)
+  printTeamAnalysisLog();
   for (let i = 0; i < premierTeams.length; i++) {
     let currentTeam = premierTeams[i];
-    console.log("\n");
-    console.log(`============== ${currentTeam.tableName} ==========`)
+    printTableNameLog(currentTeam.tableName);
     let data = await analyzeSeason(currentTeam.tableName);
     premierAnalyzed .push(data);
     console.log(data);
   }
-  console.log("\n");
-  console.log(`=============== LEAGUE ANALYSIS =====================`)
+  printLeagueAnalysisLog();
   let seasonMaxStats = maxLeagueAnalysis(premierAnalyzed);
   let bestOfpremier = getBestOfTheSeasonStats(premierAnalyzed,seasonMaxStats);
   console.log(bestOfpremier);
 }
+
+
 // MAIN
 
 // await ligaMx();
