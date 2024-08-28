@@ -106,6 +106,9 @@ async function saveData(data,tableName) {
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, \
             primary key (playerId) \
           );`)
+        // DELETE TABLE CONTENTS
+        console.log("Replacing previous data...");
+        await client.query(`DELETE FROM ${tableName} WHERE 1=1`);
         // LOOP THROUGH DATA AND SAVE IT ON THE TABLE
         for (let i = 0; i < data.length; i++) {
             let player = data[i];
