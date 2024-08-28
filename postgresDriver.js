@@ -9,16 +9,24 @@ const pgConfig = {
     port: 5432,
     database: 'postgres',
 };
-const client = new Client(pgConfig);
 
 // timestamp parse 
 pg.types.setTypeParser(1114, function(stringValue) {
     return stringValue;  //1114 for time without timezone type
   });
-  
+// date parse
 pg.types.setTypeParser(1082, function(stringValue) {
     return stringValue;  //1082 for date type
 });
+
+// function: checkIfUpdateNeeded
+
+// description: takes the timestamp as a string of a specific record on a particular table of 
+// a team, then it computes if 24 hours have elapsed, if the time has passed it returns true, if
+// not it returns false.
+
+// extra: this function is used by searchAndSaveData function when it detects an existing table
+// on the database and it needs to know if the table is ready for an update or not.
 
 // INFO WILL UPDATE EVERY 24 HOURS FOR EVERY TEAM
 function checkIfUpdateNeeded(updated_at) { // format: 2024-08-27 08:25:16.245305
@@ -38,6 +46,15 @@ function checkIfUpdateNeeded(updated_at) { // format: 2024-08-27 08:25:16.245305
     return false;
 }
 
+// function: checkTableDate
+
+// description: this function takes a table name as a parameter, and then search for the first
+// record and extracts the date that it was updated at as a string (updated_at timestamp 
+// at the db).
+
+// extra: this is used by checkIfUpdateNeeded function in order to check if the timestamp of
+// the sample record taken is ready for an update.
+
 async function checkTableDate(tableName) {
     const client = new Client(pgConfig);
     try {
@@ -51,6 +68,18 @@ async function checkTableDate(tableName) {
         await client.end();
     }
 }
+
+// function: saveData
+
+// description: takes 2 parameters, the data extracted by searchData.js main function, and
+// the table name that it is used to save or update the data passed.
+// The function checks if the table exists, if not it creates it. Then loops around every element
+// of the data retrieved by the web scraping, it validates that the value is inserted.
+// If the data is saved it returns true, if not it returns false. 
+
+// extra: It is possible that the data array has some faulty elements that the function is not
+// able to add, it then breaks the loop to stop adding records, but keeps the records added 
+// previously
 
 async function saveData(data,tableName) {
     const client = new Client(pgConfig);
@@ -100,6 +129,13 @@ async function saveData(data,tableName) {
         return result;
     }
 };
+
+
+// function: retrieveData
+
+// description: this function retrieves all records from a specific table on the database
+// it is used to retrieve the data (if it is up to date) from the database in order to be
+// analyzed by other functions
 
 async function retrieveData(tableName) { 
     const client = new Client(pgConfig);
