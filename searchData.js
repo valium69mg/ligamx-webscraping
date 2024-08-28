@@ -49,7 +49,6 @@ export default async function searchData(url,xpathPrefix,noOfPlayers) {
   let data = [];
   console.log("Searching data on the web...");
   try {
-
     // build driver
     driver = await new Builder().forBrowser(Browser.CHROME)
                         .setChromeOptions(new chrome.Options().addArguments('--headless').windowSize(screen))                            
@@ -126,10 +125,10 @@ export default async function searchData(url,xpathPrefix,noOfPlayers) {
         data.push(playerStats);
         maxPlayers += 1;
     }
+    return data;
   } catch (e) {
     console.log(`Error adding player ${maxPlayers + 1} on table. Registered only ${maxPlayers} players.`);
   } finally {
     await driver.quit(); 
-    return data;
   }
 };
