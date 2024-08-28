@@ -1,6 +1,7 @@
 import {By, Builder, Browser} from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome.js';
 
+// screen of web driver
 const screen = {
   width: 640,
   height: 480
@@ -20,6 +21,27 @@ let numberOfRedCardsSubfix = '/td[15]';
 let numberOfProgressiveCarryingSubfix = '/td[20]';
 let numberOfProgressivePassesSubfix = '/td[21]';
 let numberOfProgressivePassesReceivedSubfix = '/td[22]';
+
+// function searchData
+
+// description: this function takes three parameters
+// url => the url of the team of FBREF web page
+// xpathPrefix => the xpath of that particular team's league
+// noOfPlayers => the number of players we want to retrieve from that team
+
+// This functions main goal is to extract the data of the players of a team 
+// via the URL FBREF web using web scraping. It loops around the columns using
+// xpaths as a reference.
+
+// it loops around each row of the table on the web, then it locates an element 
+// using xpath = xpathPrefix + "tr[" + i + "]" + subfix
+// i being the number of row and subfix being the specific subfix of the column 
+// on the web page. ex: '/th' for name.
+
+// name location would be //*[@id="stats_standard_31"]/tbody/ + "tr[" + i + "]" + /th
+// or  path = //*[@id="stats_standard_31"]/tbody/tr[i]/th, i for each row of player.
+
+// finally it returns an array with all the gathered players stats.
 
 export default async function searchData(url,xpathPrefix,noOfPlayers) {
   let driver;
