@@ -3,7 +3,7 @@ import { maxLeagueAnalysis,getBestOfTheSeasonStats } from './analyzeSeason.js';
 import searchAndSaveData from './searchAndSaveData.js';
 import {printSearchAndSaveLog,printTeamAnalysisLog,printTableNameLog,printLeagueAnalysisLog} from './consolePrint.js';
 // GLOBAL PARAMETERS
-const noOfPlayers = 22;
+const noOfPlayers = 20;
 // LA LIGA MX 
 const ligamxXpath = '//*[@id="stats_standard_31"]/tbody/';
 let ligaMxTeams = [
@@ -370,6 +370,6 @@ async function premier() {
 
 // MAIN
 
-// await ligaMx();
+await ligaMx();
 // await laLiga();
-await premier();
+// await premier();
