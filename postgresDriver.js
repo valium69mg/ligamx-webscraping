@@ -88,24 +88,7 @@ async function saveData(data,tableName) {
         // ESTABLISH CONNECTION WITH THE POSTGRES DB
         await client.connect();
         // TABLE CREATION
-        await client.query(`CREATE TABLE IF NOT EXISTS ${tableName} ( \
-            playerid serial, \
-            name varchar(50), \
-            post varchar(10), \
-            country varchar(10), \
-            number_of_matches varchar(10), \
-            number_of_starting_matches varchar(10), \
-            number_of_minutes_played varchar(10), \
-            number_of_goals varchar(10), \
-            number_of_assist varchar(10), \
-            number_of_yellow_cards varchar(10), \
-            number_of_red_cards varchar(10), \
-            number_of_progressive_carrying varchar(10), \
-            number_of_progressive_pass varchar(10), \
-            number_of_progressive_pass_received varchar(10), \
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, \
-            primary key (playerId) \
-          );`)
+        await createTableIfNotExists(tableName);
         // LOOP THROUGH DATA AND SAVE IT ON THE TABLE
         for (let i = 0; i < data.length; i++) {
             let player = data[i];
@@ -130,7 +113,39 @@ async function saveData(data,tableName) {
     }
 };
 
+// function: createTableIfNotExists
 
+// description: this function creates the table for the team stats 
+// it is the same table at table.sql.
+
+async function createTableIfNotExists(tableName) {
+    const client = new Client(pgConfig);
+    try {
+        await client.query(`CREATE TABLE IF NOT EXISTS ${tableName} ( \
+            playerid serial, \
+            name varchar(50), \
+            post varchar(10), \
+            country varchar(10), \
+            number_of_matches varchar(10), \
+            number_of_starting_matches varchar(10), \
+            number_of_minutes_played varchar(10), \
+            number_of_goals varchar(10), \
+            number_of_assist varchar(10), \
+            number_of_yellow_cards varchar(10), \
+            number_of_red_cards varchar(10), \
+            number_of_progressive_carrying varchar(10), \
+            number_of_progressive_pass varchar(10), \
+            number_of_progressive_pass_received varchar(10), \
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, \
+            primary key (playerId) \
+          );`)
+    }catch(e) {
+        console.log(e);
+        console.log(`Problem creating table ${tableName}`)
+    }finally{
+        await client.end();
+    } 
+};
 // function: retrieveData
 
 // description: this function retrieves all records from a specific table on the database
