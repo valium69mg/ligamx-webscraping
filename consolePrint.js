@@ -1,3 +1,9 @@
+
+// funcions: Logs
+
+// description: logs used on the index functions of analysis of leagues.
+// Separated them into another file for cleaner looking code.
+
 function printSearchAndSaveLog() {
     console.log("\n");
     console.log(`============== SEARCH AND SAVE DATA =================`);
