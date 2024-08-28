@@ -47,6 +47,7 @@ export default async function searchData(url,xpathPrefix,noOfPlayers) {
   let driver;
   let maxPlayers = 0;
   let data = [];
+  console.log("Searching data on the web...");
   try {
     // build driver
     driver = await new Builder().forBrowser(Browser.CHROME)

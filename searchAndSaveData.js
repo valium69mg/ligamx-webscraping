@@ -27,6 +27,7 @@ export default async function searchAndSaveData(teamUrl,teamXpath,teamPlayerCoun
       console.log("Table not found, searching info...");
       let searchedData = [];
       searchedData = await searchData(teamUrl,teamXpath,teamPlayerCount); // SEARCH DATA
+      console.log("Data gathered from the web.");
       if (searchedData != null && searchData != []) { // IF SEARCH WAS SUCCESFUL
         await saveData(searchedData, tableName); // returns true or false
         return;
