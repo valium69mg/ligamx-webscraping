@@ -50,12 +50,6 @@ export default async function searchData(url,xpathPrefix,noOfPlayers) {
   console.log("Searching data on the web...");
   try {
 
-    // IF FUNCTION IS NOT COMPLETED ON 30 SECONDS THE FUNCTIONS EXITS AND RETURNS []
-    setTimeout(() => {
-      console.log("Warning: time for gathering info has expired.");
-      return data;
-    },30000) // 
-    
     // build driver
     driver = await new Builder().forBrowser(Browser.CHROME)
                         .setChromeOptions(new chrome.Options().addArguments('--headless').windowSize(screen))                            
