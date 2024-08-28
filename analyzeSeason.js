@@ -1,9 +1,17 @@
-//=============================== ANALYZE DATA ====================================//
 import { retrieveData } from "./postgresDriver.js";
-// ANALYZE DATA 
-// ANALYZE 1 SEASON OF A TEAM
-// MOST GOALS, MOST ASSISTS, MOST G/A, MOST Progression, Most Time Played, Most Cards
-// tableName = fc_barcelona_stats_24_25
+
+// function: analyzeSeason
+
+// description: this function takes a tableName as a parameter (ex: brighton_stats_24_25)
+// and analyzes each one of its columns in order to get the players with top goals, assists, etc.
+
+// if the data of that table is succesfully retrieved then it loops around the data to find the top
+// players in its respective area of analysis and then returns the full stats (Line 95). 
+
+// if the retrieveData function (retrieves the data from the database as an array) throws no results
+// the program returns an empty list of stats.
+
+// extra: this analizes the max stats of a single team.
 
 export default async function analyzeSeason(tableName) {
     // TRY TO CONSULT THE DB FOR THE SPECIFIC TABLE
@@ -100,6 +108,12 @@ export default async function analyzeSeason(tableName) {
   };
 
 
+// function: printTeamAnalysis
+
+// description: this function takes data as a parameter (with the format of analyzedData variable
+// on line 92) and displays it in the console with a particular format.
+
+
 function printTeamAnalysis(data) {
   console.log("Max Goals: " + data.maxGoals.amount + " => " + data.maxGoals.name);
   console.log("Max Assists: " + data.maxAssists.amount + " => " + data.maxAssists.name);
@@ -111,6 +125,17 @@ function printTeamAnalysis(data) {
   console.log("Max Yellow Cards: " + data.maxYellowCards.amount + " => " + data.maxYellowCards.name);
   console.log("Max Red Cards: " + data.maxRedCards.amount + " => " + data.maxRedCards.name);
 }
+
+// function: maxLeageAnalysis
+
+// description: this function takes league (list of analyzedData variables from line 95) and then 
+// returns a variable of a dictionary with the top stats of the league as integers. See line 191
+// for return type.
+
+// extra: this helps getBestOfTheSeasonStats function to retrieve the players from the league
+// that match the top stats of the league (sometimes there are multiple players with same stats
+// so having the top marks helps gathering multiple players)
+
 
 function maxLeagueAnalysis(league) {
   // ANALYZE LEAGUE 
@@ -175,6 +200,18 @@ function maxLeagueAnalysis(league) {
   }
 
 };
+
+// function: getBestOfTheSeasonStats
+
+// description: this function takes two parameters:
+
+//  analizedSeason => list of variables returned from analyzeSeason function (See line 95 for return
+//  type) from a single season (ex: premier league)
+
+//  seasonStats => parameter returned from maxLeagueAnalysis (See line 191 for return type) used to 
+//  compare the list of teams stats to the max stats in order to return besOfTheSeason dictionary
+//  (See line 217 for return type)
+
 
 function getBestOfTheSeasonStats(analyzedSeason,seasonStats) {
   let bestOfTheSeason = {
