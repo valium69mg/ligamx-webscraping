@@ -26,14 +26,26 @@ export default async function searchAndSaveData(teamUrl,teamXpath,teamPlayerCoun
     if (updated_at === null) { // THERE IS NOT A TABLE WITH THAT NAME
       console.log("Table not found, searching info...");
       let searchedData = [];
-      searchedData = await searchData(teamUrl,teamXpath,teamPlayerCount); // SEARCH DATA
-      console.log("Data gathered from the web.");
+      
+      // TIMER OF 6O SECONDS TO GATHER INFO FROM THE WEB
+      try {
+        searchedData = await searchDataWithTimeout(teamUrl,teamXpath,teamPlayerCount,60 * 1000);
+      }catch(e) {
+        console.log("Warning: Could not  retrieve data from the web.");
+        console.log(`Data not saved for ${tableName}`);
+      }
+      
+      console.log(searchedData);   
       if (searchedData != null && searchedData != []) { // IF SEARCH WAS SUCCESFUL
+        console.log("Data gathered from the web.");
         await saveData(searchedData, tableName); // returns true or false
         return;
       } 
-      console.log(`Data not saved for ${tableName}`);
-      return;
+      // IF SEARCH WAS NOT SUCCESFULL 
+      if (searchedData == []) {
+        console.log(`Data not saved for ${tableName}`);
+        return;
+      }
     } 
     // IF TABLE IS FOUND
     console.log("Table found, analyzing if info is up to date...");
@@ -49,3 +61,12 @@ export default async function searchAndSaveData(teamUrl,teamXpath,teamPlayerCoun
     }
   };
   
+
+function searchDataWithTimeout(teamUrl,teamXpath,teamPlayerCount,timeout) {
+    return new Promise(function(resolve,reject) {
+      // PROMISE
+      searchData(teamUrl,teamXpath,teamPlayerCount).then(resolve,reject);
+      // TIMER
+      setTimeout(reject,timeout);
+    })
+};
